@@ -6,7 +6,7 @@ A collaborative C++ project for the CST209 coursework.
 
 | Member | Responsibility |
 |---|---|
-| Member 1 | Part A |
+| Loh Haw Cherng | Part D |
 | Member 2 | Part A |
 | Member 3 | Parts B and C |
 | Member 4 | Part D |
