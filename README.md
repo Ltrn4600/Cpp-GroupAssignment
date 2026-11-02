@@ -6,10 +6,10 @@ A collaborative C++ project for the CST209 coursework.
 
 | Member | Responsibility |
 |---|---|
-| Loh Haw Cherng | Part D |
+| Member 1 | Part A |
 | Member 2 | Part A |
 | Member 3 | Parts B and C |
-| Member 4 | Part D |
+| Loh Haw Cherng | Part D |
 
 ## Repository structure
 
