@@ -9,14 +9,6 @@ A small C++ group coursework repository. Students write and review the assignmen
 
 Add source files, headers, UML diagrams and reports **when they are actually needed**. Do not create empty folders in advance.
 
-## Team work
-
-| Member | Assigned part |
-|---|---|
-| Member 1 | Part A |
-| Member 2 | Part A |
-| Member 3 | Parts B and C |
-| Member 4 | Part D |
 
 Each member works on their own `feature/*` branch and opens a Pull Request to `main`. Another member reviews before merging. `main` is the shared stable version; no separate `dev` branch is necessary.
 
