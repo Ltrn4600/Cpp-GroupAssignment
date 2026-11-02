@@ -1,66 +1,35 @@
 # CST209 C++ Group Assignment
 
-A collaborative C++ project for the CST209 coursework.
+A small C++ group coursework repository. Students write and review the assignment; AI only assists with Git maintenance.
 
-## Team responsibilities
+## Files
 
-| Member | Responsibility | Upload location |
-|---|---|---|
-| Member 1 | Write the Part A report | `docs/Reports/Member1/` |
-| Member 2 | Write the Part A report | `docs/Reports/Member2/` |
-| Member 3 | Create UML diagrams for Parts B and C | `docs/UML/PartB/` and `docs/UML/PartC/` |
-| Member 4 | Develop the C++ code | `src/` and `include/` |
+- `src/main.cpp` — current program entry point
+- `.gitignore` — ignore generated files
 
-## Repository structure
+Add source files, headers, UML diagrams and reports **when they are actually needed**. Do not create empty folders in advance.
 
-- `src/` — C++ source files (`.cpp`)
-- `include/` — C++ header files (`.h` / `.hpp`)
-- `docs/Reports/Member1/` — Member 1's report
-- `docs/Reports/Member2/` — Member 2's report
-- `docs/UML/PartB/` — UML diagrams for Part B
-- `docs/UML/PartC/` — UML diagrams for Part C
-- `tests/` — test files
+## Team work
 
-## Requirements
+| Member | Assigned part |
+|---|---|
+| Member 1 | Part A |
+| Member 2 | Part A |
+| Member 3 | Parts B and C |
+| Member 4 | Part D |
 
-- C++17-compatible compiler (GCC / MinGW recommended)
-- Git
-- Visual Studio Code (recommended)
+Each member works on their own `feature/*` branch and opens a Pull Request to `main`. Another member reviews before merging. `main` is the shared stable version; no separate `dev` branch is necessary.
 
-## Build and run
+## AI responsibility boundary
 
-From the repository root:
+AI may **inspect Git status/diffs, diagnose errors or conflicts, create branches and commits on request, review PRs, and merge only with explicit team approval**.
+
+AI must **not** independently implement or rewrite coursework features, change project requirements, overwrite another member's work, force-push, or delete active branches without explicit approval. Compilation errors may be explained, but coursework code corrections remain the students' responsibility.
+
+## Build (current starter program)
 
 ```bash
 g++ -std=c++17 -Wall -Wextra -pedantic src/main.cpp -o group_assignment
 ```
 
-Windows PowerShell:
-
-```powershell
-.\group_assignment.exe
-```
-
-Linux / macOS:
-
-```bash
-./group_assignment
-```
-
-## Team workflow
-
-1. Pull the latest changes from `main` before starting.
-2. Work on your assigned branch; do not commit directly to `main`.
-3. Keep commits focused and use clear messages.
-4. Push your branch and open a Pull Request into `main`.
-5. Ask another member to review before merging.
-6. Coordinate code interfaces and file names with Member 4 before changing shared code.
-
-## Suggested branches
-
-- `docs/member1-report`
-- `docs/member2-report`
-- `docs/member3-uml`
-- `feature/member4-code`
-
-Use descriptive file names, for example `Member1_PartA_Report.pdf`, `PartB_ClassDiagram.png`, or `MainMenu.cpp`.
+Run `./group_assignment` on Linux/macOS or `.\group_assignment.exe` on Windows. Update this command when more source files are added.
