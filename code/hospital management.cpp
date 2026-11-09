@@ -1061,5 +1061,5 @@ int main(){
     hospital.run();
     return 0;
 }
-};
+
 
