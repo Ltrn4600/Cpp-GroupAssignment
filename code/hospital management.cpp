@@ -689,9 +689,377 @@ void dequeueAppointment(){
 
     void loadPatients(){
         ifstream file("patients.data");
-        
+        if(!file) return ;
+        string line;
+        while(getline(file,line)){
+            stringstream ss(line);
+            string id,age,name,gender,disease,phone;
+            if(!getline(ss,id,'\t') || !getline(ss,age,'\t') ||
+                !getline(ss,name,'\t') || getline(ss,gender,'\t') ||
+                !getline(ss,disease,'\t') ||!getline(ss,phone)) continue;
+
+                Patient*p=new Patient;
+                try {p->id=stoi(id);p->age=stoi(age);}
+                catch (...) {delete p;continue;}
+                p->name=name;
+                p->gender=gender;
+                p->disease=disease;
+                p->phone=phone;
+                if(findPatient(p->id)) {
+                    delete p;
+                    continue;
+                }
+                p->next=patientHead;
+                patientHead=p;
+        }
     }
 
+    void saveDoctors() const {
+        ofstream file("doctors.dat");
+        if(!file) return;
+        for (Doctor*d=doctorHead;d;d=d->next)
+            file<<d->id<<'\t'<<d->name<<'\t'<<d->specialty<<'\t'<<d->phone<<endl;
+    }
 
+    void loadDoctors(){
+        ifstream file("doctors.dat");
+        if(!file) return;
+        string line;
+        while(getline(file,line)){
+            stringstream ss(line);
+            string id,name,specialty,phone;
+            if(!getline(ss,id,'\t') || !getline(ss,name,'\t') || 
+                !getline(ss,specialty,'\t') || !getline(ss,phone)) continue;
+
+                Doctor* d=new Doctor;
+                try {
+                    d->id=stoi(id);
+                }
+                catch(...) {
+                    delete d;
+                    continue;
+                }
+                d->name=name;
+                d->specialty=specialty;
+                d->phone=phone;
+                if(findDoctor(d->id)){
+                    delete d;
+                    continue;
+                }
+                d->next=doctorHead;
+                doctorHead=d;
+        }
+    }
+
+    void saveMedicines() const {
+        ofstream file("medicines.dat");
+        if(!file) return;
+        for (Medicine*m=medicineHead;m;m=m->next)
+            file<<m->id<<'\t'<<m->stock<<'\t'<<setprecision(17)<<m->price<<'\t'<<m->name<<endl;
+    }
+
+    void loadMedicines() {
+        ifstream file("medicines.dat");
+        if(!file) return;
+        string line;
+        while(getline(file,line)){
+            stringstream ss(line);
+            string id,stock,price,name;
+            if (!getline(ss,id,'\t') || !getline(ss,stock,'\t') ||
+                !getline(ss,price,'\t') || !getline(ss,name)) continue;
+
+            Medicine* m = new Medicine;
+            try { m->id = stoi(id); 
+                m->stock = stoi(stock);
+                m->price = stod(price); 
+            }
+            catch (...) { 
+                delete m; 
+                continue; 
+            }
+            m->name = name;
+            if (findMedicine(m->id)) { delete m; continue; }
+            m->next = medicineHead; medicineHead = m;
+        }
+    }
+
+    void saveAll() const {
+        savePatients();
+        saveDoctors();
+        saveMedicines();
+        cout<<"Data saved successfully."<<endl;
+    }
+
+    void reports() const {
+        int occupied=0;
+        double revenue=0.0;
+        for(int i=1;i<=MAX_ROOMS;++i) if(rooms[i]!=0) ++occupied;
+        for(Bill*b=billHead;b;b=b->next) revenue+=b->total;
+        cout<< "\n========== HOSPITAL REPORT ==========\n"
+            << "Total patients : "<<countPatients()<<'\n'
+            << "Total doctors  : "<<countDoctors()<<'\n'
+            << "Occupied rooms : "<<occupied<< " / "<<MAX_ROOMS<<'\n'
+            << "Total billing  : "<<fixed<< setprecision(2)<<revenue<<endl;;
+    }
+
+    void displayHistory() const {
+        if(historyTop<0){
+            cout<<"History is empty"<<endl;
+            return;
+        }
+        cout<<"\n======== OPERATION HISTORY ========\n";
+        for(int i=historyTop;i>=0;--i){
+            cout<<historyTop-i+1<<". "<<history[i]<<endl;
+        }
+    }
+
+    void peekHistory() const {
+        if(historyTop<0) cout<<"History is empty!"<<endl;
+        else cout<<"Latest operation: "<<history[historyTop]<<endl;
+    }
+
+    void popHistory() {
+        if(historyTop<0) cout<<"History is empty!"<<endl;
+        else cout <<"Removed:"<<history[historyTop--]<<endl;
+    }
+
+    void patientMenu() {
+        int choice;
+        do {
+            cout<<"\n======== PATIENT MANAGEMENT =========\n"
+                <<"1.Add Patient\n2.Delete Patient\n3.Search Patient\n"
+                <<"4.Update Patient\n5.Display Patient\n0.Back\n";
+            choice=inputInt("Choice: ");
+            switch(choice){
+                case 1:addDoctor();break;
+                case 2:searchDoctorMenu();break;
+                case 3:displayDoctors();break;
+                case 0:break;
+                default:cout<<"Invalid choice1\n";
+            }
+        } while(choice!=0);
+    }
+
+    void doctorMenu(){
+        int choice;
+        do {
+            cout<<"\n======== DOCTOR MANAGEMENT =========\n"
+                <<"1.Add Doctor\n2.Search Doctor\n3.Display Doctors\n0.Back\n";
+                choice=inputInt("Choice: ");
+                switch(choice){
+                    case 1:addDoctor();break;
+                    case 2:searchDoctorMenu();break;
+                    case 3:displayDoctors();break;
+                    case 0:break;
+                    default:cout<<"Invalid choice!\n";
+                }
+        } while(choice!=0);
+    }
+
+    void appointmentMenu() {
+        int choice;
+        do {
+            cout<<"\n======== APPOINTMENTS =========\n"
+                <<"1.Book Appointment\n2.Process Next Appointment\n3.Display Queue\n0.Back\n";
+            choice=inputInt("Choice: ");
+            switch(choice){
+                case 1:enqueueAppointment();break;
+                case 2:dequeueAppointment();break;
+                case 3:displayAppointments();break;
+                case 0:break;
+                default:cout<<"Invalid choice.\n"<<endl;
+            }
+        } while(choice!=0);
+    }
+
+    void emergencyMenu(){
+        int choice;
+        do {
+            cout<<"\n========EMERGENCY ========\n"
+                <<"1. Add Emergency Patient\n2. Process Highest Priority\n3. Display Emergency Queue\n0. Back\n";
+            choice=inputInt("Choice: ");
+            switch (choice){
+                case 1: addEmergency();break;
+                case 2: processEmergency(); break;
+                case 3: displayEmergencies(); break;
+                case 0: break;
+                default: cout << "Invalid choice.\n";
+            }
+        } while (choice != 0);
+    }
+
+    void medicalMenu() {
+        int choice;
+        do {
+            cout<<"\n========== MEDICAL RECORDS ==========\n"
+                <<"1. Add Medical Record\n2. View Patient History\n0. Back\n";
+            choice=inputInt("Choice: ");
+            switch(choice){
+                case 1:addMedicalRecord();break;
+                case 2:viewMedicalRecords();break;
+                case 0:break;
+                default:cout<<"Invalid choice.\n";
+            }
+        } while(choice!=0);
+    }
+
+    void pharmacyMenu(){
+        int choice;
+        do {
+            cout<<"\n========== PHARMACY ==========\n"
+                <<"1. Add Medicine\n2. Display Medicines\n3. Search Medicine\n4. Dispense Medicine\n0. Back\n";
+            choice=inputInt("Choice: ");
+            switch(choice){
+                case 1:addMedicine();break;
+                case 2:displayMedicine();break;
+                case 3:searchMedicineMenu();break;
+                case 4:dispenseMedicine();break;
+                case 0:break;
+                default:cout<<"Invalid choice.\n";
+            }
+        } while(choice!=0);
+    }
+
+    void billingMenu() {
+        int choice;
+        do {
+            cout << "\n========== BILLING ==========\n1. Generate Bill\n2. Display Bills\n0. Back\n";
+            choice=inputInt("Choice: ");
+            switch(choice){
+                case 1:createBill();break;
+                case 2:displayBills();break;
+                case 0:break;
+                default:cout<<"Invalid choice.\n";
+            }
+        } while(choice!=0);
+    }
+
+    void roomMenu() {
+        int choice;
+        do {
+            cout<<"\n========== ROOM MANAGEMENT ==========\n"
+                <<"1. Allocate Room\n2. Release Room\n3. Display Rooms\n0. Back\n";
+            choice=inputInt("Choice: ");
+            switch(choice){
+                case 1:allocateRoom();break;
+                case 2:releaseRoom();break;
+                case 3:displayRooms();break;
+                case 0:break;
+                default:cout<<"Invalid choice.\n";
+            }
+        } while(choice!=0);
+    }
+
+    void historyMenu() {
+        int choice;
+        do {
+            cout<<"\n========== STACK ==========\n1. Display History\n2. Peek\n3. Pop\n0. Back\n";
+            choice=inputInt("Choice: ");
+            switch(choice){
+                case 1:displayHistory();break;
+                case 2:peekHistory();break;
+                case 3:popHistory();break;
+                case 0:break;
+                default:cout<<"Invalid choice.\n";
+            }
+        } while(choice!=0);
+    }
+
+    void freeAll() {
+        while (patientHead) { 
+            Patient* t = patientHead; 
+            patientHead = patientHead->next;
+            delete t;
+            }
+        
+        while (doctorHead){
+            Doctor* t=doctorHead;
+            doctorHead=doctorHead->next;
+            delete t;
+        }
+
+        while(appointmentFront){
+            Appointment* t=appointmentFront;
+            appointmentFront=appointmentFront->next;
+            delete t;
+        }
+        appointmentRear=NULL;
+
+        while(emergencyHead){
+            Emergency* t=emergencyHead;
+            emergencyHead=emergencyHead->next;
+            delete t;
+        }
+
+        while(recordHead){
+            MedicalRecord *t=recordHead;
+            recordHead=recordHead->next;
+            delete t;
+        }
+
+        while(medicineHead){
+            Medicine *t=medicineHead;
+            medicineHead=medicineHead->next;
+            delete t;
+        }
+
+        while(billHead){
+            Bill *t=billHead;
+            billHead=billHead->next;
+            delete t;
+        }
+    }
+
+public:
+    HospitalSystem()=default;
+    HospitalSystem(const HospitalSystem&)=delete;
+    HospitalSystem& operator=(const HospitalSystem&)=delete;
+
+    ~HospitalSystem() {freeAll(); }
+
+    void run() {
+        loadPatients();
+        loadDoctors();
+        loadMedicines();
+
+        int choice;
+        do {
+            cout<<"\n============================================\n"
+                <<"       HOSPITAL MANAGEMENT SYSTEM\n"
+                <<"============================================\n"
+                <<"1.  Patient Management\n2.  Doctor Management\n"
+                <<"3.  Appointment Queue\n4.  Emergency Priority Queue\n"
+                <<"5.  Medical Records\n6.  Pharmacy\n7.  Billing\n"
+                <<"8.  Room Management\n9.  Operation History / Stack\n"
+                <<"10. Reports\n11. Save Data\n0.  Exit\n"
+                <<"============================================\n";
+            choice=inputInt("Enter Choice: ");
+            switch(choice){
+                case 1:patientMenu();break;
+                case 2:doctorMenu();break;
+                case 3:appointmentMenu();break;
+                case 4:emergencyMenu();break;
+                case 5:medicalMenu();break;
+                case 6:pharmacyMenu();break;
+                case 7:billingMenu();break;
+                case 8:roomMenu();break;
+                case 9:historyMenu();
+                case 10:reports();break;
+                case 11:saveAll();break;
+                case 0:
+                    saveAll();
+                    cout<<"Exiting Hospital Management System...\n";
+                    break;
+                default:cout<<"Invalid choice.\n";
+            }
+        } while(choice!=0);
+    }
+};
+
+int main(){
+    HospitalSystem hospital;
+    hospital.run();
+    return 0;
+}
 };
 
